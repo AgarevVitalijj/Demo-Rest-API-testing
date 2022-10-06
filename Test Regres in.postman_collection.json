@@ -1,0 +1,304 @@
+{
+	"info": {
+		"_postman_id": "13b60d6e-8dae-4cf9-9f4d-37831b4fe4c4",
+		"name": "Test Regres in",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21147118"
+	},
+	"item": [
+		{
+			"name": "LIST USERS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"////Проверка статус-кода 200",
+							"",
+							"pm.test(\"Ответ 200\", ()=> {",
+							"    if(pm.response.to.have.status(200)&& pm.response.to.have.status(\"OK\")){",
+							"        console.log('Succes');",
+							"    }",
+							"    else{",
+							"        console.log('Error');",
+							"    }",
+							"});",
+							"",
+							"////Проверка на приемлемое время ответа от сервера",
+							"pm.test(\"Время ответа меньше 200 мс\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"////Проверка на структуру ответа Json",
+							"pm.test('Стуктура JSON', ()=>{",
+							"",
+							"const scheme = {",
+							"",
+							"    \"page\": \"int\",",
+							"    \"per_page\" : \"int\",",
+							"    \"total\" : \"int\",",
+							"    \"data\" : \"array\"",
+							"};",
+							"",
+							"jSONresponse = pm.response.json();",
+							"",
+							"pm.expect(jSONresponse.page).to.be.an(\"number\");",
+							"pm.expect(jSONresponse.per_page).to.be.an(\"number\");",
+							"pm.expect(jSONresponse.total).to.be.an(\"number\");",
+							"pm.expect(jSONresponse.data).to.be.an(\"array\");",
+							"});",
+							"",
+							"//// Проверка содержимого ответа Json  ",
+							"pm.test(\"Проверка содержимого ответа\", ()=>{",
+							"",
+							"response = pm.response.json();",
+							"",
+							"pm.expect(response.page).to.eql(2);",
+							"pm.expect(response.per_page).to.eql(6);",
+							"pm.expect(response.total).to.eql(12);",
+							"pm.expect(response.total_pages).to.eql(2);",
+							"pm.expect(response.data[0].id).to.eql(7);",
+							"",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}users?page=2",
+					"host": [
+						"{{url}}users"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SINGLE USER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"////Проверка статус-кода",
+							"pm.test(\"Проверка статус кода\", ()=>{",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"////Проверка на приемлемое время ответа от сервера",
+							"pm.test(\"Ответ от сервера менее 200 мс\", ()=>{",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							" "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}users/2",
+					"host": [
+						"{{url}}users"
+					],
+					"path": [
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"////Проверка статус-кода",
+							"pm.test(\"Проверка статус кода\", ()=>{",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"////Проверка на время ответа от сервера",
+							"pm.test(\"Ответ от сервера менее 200 мс\", ()=>{",
+							"    pm.expect(pm.response.responseTime).to.be.below(300);",
+							"});",
+							" ",
+							" ////Проверка на структуру ответа Json",
+							"pm.test('Стуктура JSON', ()=>{",
+							"",
+							"const scheme = {",
+							"",
+							"    \"name\": \"string\",",
+							"    \"job\" : \"string\",",
+							"    \"id\" : \"string\",",
+							"    \"createdAt\" : \"string\"",
+							"};",
+							"",
+							"jSONresponse = pm.response.json();",
+							"",
+							"pm.expect(jSONresponse.name).to.be.an(\"string\");",
+							"pm.expect(jSONresponse.job).to.be.an(\"string\");",
+							"pm.expect(jSONresponse.id).to.be.a(\"string\");",
+							"pm.expect(jSONresponse.createdAt).to.be.an(\"string\");",
+							"});",
+							"",
+							"//// Проверка содержимого   не рандомных полей ответа Json  ",
+							"pm.test(\"Проверка содержимого ответа\", ()=>{",
+							"",
+							"response = pm.response.json();",
+							"",
+							"pm.expect(response.name).to.eql(\"morpheus\");",
+							"pm.expect(response.job).to.eql(\"leader\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"morpheus\",\n    \"job\": \"leader\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}users",
+					"host": [
+						"{{url}}users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"///Проверка статус-кода",
+							"pm.test(\"Проверка статус кода\", ()=>{",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"////Проверка на время ответа от сервера",
+							"pm.test(\"Ответ от сервера менее 200 мс\", ()=>{",
+							"    pm.expect(pm.response.responseTime).to.be.below(300);",
+							"});",
+							"",
+							"////Проверка на структуру ответа Json",
+							"pm.test('Стуктура JSON', ()=>{",
+							"",
+							"const scheme = {",
+							"",
+							"    \"name\": \"string\",",
+							"    \"job\" : \"string\",",
+							"    \"updatedAt\" : \"string\",",
+							"};",
+							"",
+							"jSONresponse = pm.response.json();",
+							"",
+							"pm.expect(jSONresponse.name).to.be.an(\"string\");",
+							"pm.expect(jSONresponse.job).to.be.an(\"string\");",
+							"pm.expect(jSONresponse.updatedAt).to.be.an(\"string\");",
+							"});",
+							"",
+							"//// Проверка содержимого   не рандомных полей ответа Json  ",
+							"pm.test(\"Проверка содержимого ответа\", ()=>{",
+							"",
+							"response = pm.response.json();",
+							"",
+							"pm.expect(response.name).to.eql(\"morpheus\");",
+							"pm.expect(response.job).to.eql(\"zion resident\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"morpheus\",\n    \"job\": \"zion resident\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}users/2",
+					"host": [
+						"{{url}}users"
+					],
+					"path": [
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"///Проверка статус-кода",
+							"pm.test(\"Проверка статус кода\", ()=>{",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"////Проверка на время ответа от сервера",
+							"pm.test(\"Ответ от сервера менее 200 мс\", ()=>{",
+							"    pm.expect(pm.response.responseTime).to.be.below(300);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}users/2",
+					"host": [
+						"{{url}}users"
+					],
+					"path": [
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
